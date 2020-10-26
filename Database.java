@@ -4,13 +4,7 @@
  * and open the template in the editor.
  */
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.StringTokenizer;
-import javax.swing.JOptionPane;
+import java.sql.SQLException;
 
 public class Database {
     
@@ -30,41 +24,39 @@ public class Database {
         }
     }
     
-    protected static MyResult add(String fileName, String text) throws IOException{ 
-        if(exist(fileName, text))
-            return new MyResult(false, "Meno uz existuje");
-        FileWriter fw = new FileWriter(fileName, true);
-        fw.write(text + System.lineSeparator());
-        fw.close();    
-        return new MyResult(true, "");
-    }
-    
-    protected static MyResult find(String fileName, String text) throws IOException{
-        File frJm = new File(fileName);
-        if (frJm.exists() == true){
-            FileReader fr = new FileReader(frJm);
-            BufferedReader bfr = new BufferedReader(fr);
-            String riadok = "";
-            String token = "";
-            
-            while ((riadok=bfr.readLine()) != null){
-                StringTokenizer st = new StringTokenizer(riadok, ":");
-                token = st.nextToken();
-                if (token.equals(text)){
-                    fr.close();
-                    MyResult mr = new MyResult(true, riadok);
-                    return mr;
-                }
+    protected static MyResult add(String dbPath, String name, String hash, String salt)
+    {
+        try
+        {
+            if (exist(dbPath, name)) {
+                return new MyResult(false, "Meno uz existuje");
             }
-            fr.close();   
-            return new MyResult(false, "Meno sa nenaslo");              
+            DatabaseAPI.insertUser(name, hash, salt, dbPath);
+            return new MyResult(true, "");
         }
-        return new MyResult(false, "Subor neexistuje");  
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return new MyResult(false, "Chyba pri vkladani do DB. Duplikat, alebo zle data");
+        }
     }
     
-    protected static boolean exist(String fileName, String text) throws IOException{
-        StringTokenizer st = new StringTokenizer(text, ":");
-        return find(fileName, st.nextToken()).getFirst();
+    protected static MyResult find(String dbPath, String name){
+        try
+        {
+            String riadok = DatabaseAPI.returnRow(name, dbPath);
+            return new MyResult(true, riadok);
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Zaznam nenajdeny.");
+            return new MyResult(false, "Chyba pri vybere z databazy. Zle meno alebo cesta k db.");
+        }
+    }
+    
+    protected static boolean exist(String dbPath, String name)
+    {
+        return find(dbPath, name).getFirst();
     }
     
 }

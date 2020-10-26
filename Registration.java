@@ -6,17 +6,18 @@
 //////////////////////////////////////////////////////////////////////////
 
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class Registration {
-    protected static Database.MyResult registracia(String meno, String heslo) throws NoSuchAlgorithmException, Exception{
-        if (Database.exist("hesla.txt", meno)){
+    protected static Database.MyResult registracia(String meno, String heslo) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        if (Database.exist("jdbc:sqlite:usersDB", meno)){
             System.out.println("Meno je uz zabrate.");
             return new Database.MyResult(false, "Meno je uz zabrate.");
         }
         else {
             long salt = Security.getSalt();
             String hash = Security.hash(heslo, salt);
-            Database.add("hesla.txt", meno + ":" + hash + ":" + salt);
+            Database.add("jdbc:sqlite:usersDB", meno, hash, Long.toString(salt));
         }
         return new Database.MyResult(true, "");
     }

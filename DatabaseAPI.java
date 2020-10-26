@@ -38,6 +38,7 @@ public class DatabaseAPI {
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         String row = rs.getString("name") + ":" + rs.getString("hash") + ":" + rs.getString("salt");
+        rs.close();
         stmt.close();
         conn.close();
         return row;

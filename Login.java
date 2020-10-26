@@ -7,14 +7,16 @@
 //////////////////////////////////////////////////////////////////////////
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.StringTokenizer;
 
 public class Login {
-    protected static Database.MyResult prihlasovanie(String meno, String heslo) throws IOException, Exception{
+    protected static Database.MyResult prihlasovanie(String meno, String heslo) throws InvalidKeySpecException, NoSuchAlgorithmException {
         /*
         *   Delay je vhodne vytvorit este pred kontolou prihlasovacieho mena.
         */
-        Database.MyResult account = Database.find("hesla.txt", meno);
+        Database.MyResult account = Database.find("jdbc:sqlite:usersDB", meno);
         if (!account.getFirst()){
             return new Database.MyResult(false, "Nespravne meno.");
         }
