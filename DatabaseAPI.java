@@ -2,7 +2,8 @@ import java.sql.*;
 
 public class DatabaseAPI {
 
-    protected static void insertUser(String name, String hash, String salt, String path) throws SQLException {
+    protected static void insertUser(String name, String hash, String salt, String path) throws SQLException, ClassNotFoundException {
+        Class.forName("org.sqlite.JDBC");
         Connection conn = DriverManager.getConnection(path);
         String sql = "INSERT INTO USERS (NAME,HASH,SALT) " +
                 "VALUES ('" + name + "','" + hash + "','" + salt + "');";
@@ -13,7 +14,8 @@ public class DatabaseAPI {
         conn.close();
     }
 
-    protected static void printUsers(String path) throws SQLException {
+    protected static void printUsers(String path) throws SQLException, ClassNotFoundException {
+        Class.forName("org.sqlite.JDBC");
         Connection conn = DriverManager.getConnection(path);
         String sql = "SELECT * FROM USERS;";
         Statement stmt = conn.createStatement();
@@ -32,7 +34,8 @@ public class DatabaseAPI {
         conn.close();
     }
 
-    protected static String returnRow(String name, String path) throws SQLException {
+    protected static String returnRow(String name, String path) throws SQLException, ClassNotFoundException {
+        Class.forName("org.sqlite.JDBC");
         Connection conn = DriverManager.getConnection(path);
         String sql = "SELECT * FROM USERS WHERE NAME='" + name + "';";
         Statement stmt = conn.createStatement();
@@ -44,7 +47,7 @@ public class DatabaseAPI {
         return row;
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
         //test databazy
         Connection conn = DriverManager.getConnection("jdbc:sqlite:usersDB");
 

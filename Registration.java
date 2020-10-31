@@ -14,6 +14,10 @@ public class Registration {
             System.out.println("Meno je uz zabrate.");
             return new Database.MyResult(false, "Meno je uz zabrate.");
         }
+        else if(!Security.isPwdSecure(heslo))
+        {
+            return new Database.MyResult(false, "Slabe heslo.");
+        }
         else {
             long salt = Security.getSalt();
             String hash = Security.hash(heslo, salt);

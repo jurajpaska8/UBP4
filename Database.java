@@ -28,7 +28,8 @@ public class Database {
     {
         try
         {
-            if (exist(dbPath, name)) {
+            if (exist(dbPath, name))
+            {
                 return new MyResult(false, "Meno uz existuje");
             }
             DatabaseAPI.insertUser(name, hash, salt, dbPath);
@@ -38,6 +39,11 @@ public class Database {
         {
             e.printStackTrace();
             return new MyResult(false, "Chyba pri vkladani do DB. Duplikat, alebo zle data");
+        }
+        catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+            return new MyResult(false, "");
         }
     }
     
@@ -51,6 +57,11 @@ public class Database {
         {
             System.out.println("Zaznam nenajdeny.");
             return new MyResult(false, "Chyba pri vybere z databazy. Zle meno alebo cesta k db.");
+        }
+        catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+            return new MyResult(false, "");
         }
     }
     
